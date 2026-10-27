@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NovaPay · Astreinte</title>
+<style>
+:root{--bg:#07090d;--p:#0f151d;--fg:#cfe8d5;--g:#39ff7a;--r:#ff4d4d;--y:#ffc857;--m:#8aa896;--line:#1e2a36}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 ui-monospace,Menlo,Consolas,monospace;height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:20;background:repeating-linear-gradient(transparent 0 2px,rgba(0,0,0,.12) 3px)}
+:focus-visible{outline:2px solid var(--y);outline-offset:2px}
+header{display:flex;gap:16px;align-items:center;padding:10px 16px;background:var(--p);border-bottom:1px solid var(--line);flex-wrap:wrap}
+#logo{color:var(--g);font-weight:700}
+#bat{width:200px;height:22px;border:2px solid var(--g);border-radius:4px;position:relative}
+#bat i{display:block;height:100%;background:var(--g);transition:width 1s linear}
+#bat span{position:absolute;inset:0;text-align:center;color:#fff;mix-blend-mode:difference;font-weight:700}
+#bat.low{border-color:var(--r);animation:bl 1s infinite}#bat.low i{background:var(--r)}
+#who{color:var(--m);font-size:13px}#locks{font-size:20px;letter-spacing:4px}
+#fail{color:var(--r);margin-left:auto}
+@keyframes bl{50%{opacity:.45}}
+main{flex:1;display:flex;min-height:0;margin-right:260px}
+#ticket{width:38%;padding:18px;background:#0b1017;border-right:1px solid var(--line);overflow:auto;display:flex;flex-direction:column}
+#sev{display:inline-block;padding:2px 10px;border-radius:3px;background:var(--r);color:#000;font-weight:700;animation:bl 1.4s infinite}
+#sev.s2{background:var(--y)}#sev.s3{background:var(--g)}
+#from{color:var(--m);font-size:13px;margin-left:8px}
+#ticket h2{margin:10px 0;color:var(--g);font-size:19px;line-height:1.3}
+#st{white-space:pre-wrap;flex:1;max-width:70ch}
+#hints p{margin:8px 0 0;padding:8px 10px;border-left:3px solid var(--y);background:#141b24;color:var(--y);font-size:14px}
+#action-bar{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+#con{flex:1;display:flex;flex-direction:column;padding:14px;min-width:0}
+#out{flex:1;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+#row{display:flex;gap:8px;border-top:1px solid var(--line);padding-top:8px}
+#row b{color:var(--g)}#in{flex:1;background:transparent;border:0;outline:0;color:var(--fg);font:inherit;min-width:0}
+#in:disabled{color:var(--m)}
+.e{color:#ff9a9a}.c{color:var(--g)}.shake{animation:sh .25s}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+button,input.t{background:var(--p);color:var(--fg);border:1px solid var(--g);padding:9px 14px;font:inherit;border-radius:4px;min-height:38px}
+button{cursor:pointer}button:hover{background:#16212c}
+.btn-r{border-color:var(--r);color:var(--r);background:transparent}
+.btn-y{border-color:var(--y);color:var(--y);background:transparent}
+.btn-main{background:var(--g);color:#000;font-weight:700}
+.full{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;background:var(--bg)}
+#login{display:flex;z-index:7}#lobby{z-index:6}
+#lobby h1,#login h1{color:var(--g);margin:0}
+#lerr{color:var(--r);min-height:1.5em;margin:0}
+#dm{z-index:9;background:rgba(0,0,0,.94)}
+#dm-title{color:var(--g);margin:0;max-width:800px}
+#dm-text{max-width:800px;max-height:60vh;overflow:auto;text-align:left;white-space:pre-wrap;color:var(--y);font:14px/1.55 inherit;margin:0;font-family:inherit}
+#bilan{display:none;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+#bilan h3{color:var(--g);margin:0 0 8px}#bilan-sum{color:var(--y);margin:0 0 10px}
+.brow{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;background:var(--p);margin-bottom:6px;border-radius:4px}
+.brow small{display:block;color:var(--m)}
+#board{position:fixed;top:0;right:0;width:260px;height:100vh;height:100dvh;background:#0b1017;border-left:1px solid var(--line);padding:14px;overflow:auto;font-size:13px;z-index:3}
+#board h3{margin:14px 0 6px;color:var(--g);font-size:13px}#board h3:first-child{margin-top:0}
+#board ol{margin:0;padding-left:22px}#board li{margin:3px 0}
+#board .first{color:var(--g);font-weight:700}
+#board .lvl{margin:8px 0 4px;color:var(--y)}
+#board .solves{margin:0 0 0 8px;padding:0;list-style:none;color:var(--m)}
+#btn-board{display:none}
+@media(max-width:1100px){
+  #btn-board{display:inline-block}
+  main{margin-right:0}
+  #board{display:none;width:100%;z-index:9;height:100%}
+  #board.show{display:block}
+}
+@media(max-width:760px){main{flex-direction:column}#ticket{width:100%;max-height:42%;border-right:0;border-bottom:1px solid var(--line)}#bat{width:150px}}
+body.proj header,body.proj main,body.proj #login,body.proj #lobby{display:none!important}
+body.proj #board{display:block;position:static;width:auto;height:auto;font-size:22px;border:0;padding:30px}
+body.proj{overflow:auto}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head>
+<body>
+<header>
+  <span id="logo">▲ NOVAPAY · ASTREINTE</span>
+  <div id="bat" role="timer" aria-label="Temps restant"><i></i><span id="tm">15:00</span></div>
+  <span id="who"></span><div id="locks" aria-label="Progression"></div><div id="fail"></div>
+  <button id="btn-board" class="btn-y" onclick="$('board').classList.toggle('show')">🏆 Classement</button>
+</header>
+<main>
+<section id="ticket">
+  <div><span id="sev"></span><span id="from"></span><small id="lv" style="margin-left:8px;color:var(--m)"></small></div>
+  <h2 id="ti"></h2>
+  <div id="st"></div>
+  <div id="hints"></div>
+  <div id="action-bar">
+    <button id="btn-hint" class="btn-y" onclick="askHint()"></button>
+    <button id="btn-skip" class="btn-r" onclick="skipLevel()">⏭ Passer (0 pt)</button>
+    <button id="btn-rst" onclick="resetLevel()">↺ Redémarrer l'incident</button>
+  </div>
+  <div id="bilan"><h3>Bilan de l'équipe</h3><p id="bilan-sum"></p><div id="bilan-list"></div></div>
+</section>
+<section id="con"><div id="out" aria-live="polite"></div>
+  <div id="row"><b>SQL&gt;</b><input id="in" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Commande SQL"></div></section>
+</main>
+<aside id="board">
+  <h3>CLASSEMENT</h3><ol id="board-teams"></ol>
+  <h3>RÉSOLU PAR</h3><div id="board-levels"></div>
+</aside>
+
+<div id="dm" class="full">
+  <h1 id="dm-title"></h1><pre id="dm-text"></pre>
+  <button id="dm-ok" class="btn-main" onclick="closeDebrief()">Continuer</button>
+</div>
+
+<div id="lobby" class="full">
+  <h1>📟 Appel en attente</h1>
+  <p>Vous êtes connecté. Le formateur lance la partie.<br>Vous aurez 15 minutes pour 3 incidents dès le top départ.</p>
+  <p id="lb-teams" style="color:var(--m);max-width:600px"></p>
+</div>
+
+<div id="login" class="full">
+  <h1>📟 PAGER : pay-db-01</h1>
+  <p>Il est 02:14. Vous êtes le seul DBA d'astreinte.<br>15 minutes. 3 incidents. Réparez-les avec des commandes.</p>
+  <input class="t" id="tn" placeholder="Nom d'équipe" maxlength="24" autocomplete="off">
+  <button id="go" class="btn-main">Prendre l'appel</button>
+  <p id="lerr" role="alert"></p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id),TOTAL=900,enc=encodeURIComponent;
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+let team="",left=TOTAL,running=false,level=-1,hist=[],hi=0,failed=0,ty,modal=false,onClose=null,debriefs=[];
+if(location.hash==="#board")document.body.classList.add("proj");
+
+async function api(p,b){
+  const r=await fetch(p,b?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({team,...b})}:{});
+  let j={};try{j=await r.json()}catch(e){}
+  if(!r.ok){const e=new Error(typeof j.detail==="string"?j.detail:"Erreur "+r.status);e.status=r.status;throw e}
+  return j;
+}
+const mmss=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+const q=()=>"?team="+enc(team);
+function print(t,c){const d=document.createElement("div");if(c)d.className=c;d.textContent=t;$("out").append(d);$("out").scrollTop=1e9}
+function typeText(t){clearInterval(ty);if(reduce){$("st").textContent=t;return}let i=0;$("st").textContent="";ty=setInterval(()=>{$("st").textContent=t.slice(0,i+=4);if(i>=t.length)clearInterval(ty)},12)}
+
+/* ---------- debrief modal ---------- */
+function openDebrief(title,text,cb){modal=true;onClose=cb||null;$("dm-title").textContent=title;$("dm-text").textContent=text;$("dm").style.display="flex";$("dm-ok").focus()}
+function closeDebrief(){$("dm").style.display="none";modal=false;const f=onClose;onClose=null;if(f)f();else if(!$("in").disabled)$("in").focus()}
+async function loadDebriefs(){try{debriefs=await api("/api/debriefs"+q())}catch(e){}}
+async function showDebrief(i){if(!debriefs[i])await loadDebriefs();const d=debriefs[i];if(d)openDebrief(d.title,d.debrief)}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&modal)closeDebrief()});
+
+/* ---------- actions ---------- */
+async function act(path,extra,reset){try{if(reset)level=-1;render(await api(path,extra||{}))}catch(e){print(e.message,"e")}}
+function askHint(){act("/api/hint")}
+function skipLevel(){if(confirm("Passer cet incident ? Il sera marqué non résolu (0 point). Vous pourrez le retenter à la fin s'il reste du temps."))act("/api/skip",{},true)}
+function resetLevel(){if(confirm("Redémarrer cet incident ? L'état de la base est remis à zéro (les indices utilisés restent comptés)."))act("/api/reset",{},true)}
+function retryLevel(i){if(confirm("Réessayer l'incident "+(i+1)+" ?"))act("/api/retry",{level:i},true)}
+
+/* ---------- rendu ---------- */
+function render(v){
+  $("who").textContent=v.team;
+  if(v.lobby){
+    running=false;left=TOTAL;paint();
+    $("lobby").style.display="flex";
+    $("lb-teams").textContent="Équipes inscrites : "+v.teams.join(" · ");
+    return;
+  }
+  $("lobby").style.display="none";
+  running=!v.done;
+  if(v.done){
+    $("bilan").style.display="block";
+    ["btn-skip","btn-hint","btn-rst"].forEach(id=>$(id).style.display="none");
+    $("hints").textContent="";
+    $("bilan-sum").textContent="Score : "+v.score+" pts · temps : "+mmss(v.time);
+    const list=$("bilan-list");list.textContent="";
+    v.results.forEach((r,i)=>{
+      const row=document.createElement("div");row.className="brow";
+      const txt=document.createElement("div");
+      const b=document.createElement("b");b.style.color=r.ok?"var(--g)":"var(--r)";b.textContent=(r.ok?"✔":"✘")+" Incident "+(i+1);
+      const s=document.createElement("small");s.textContent=r.concept;
+      txt.append(b,s);row.append(txt);
+      if(r.ok||v.can_retry){
+        const btn=document.createElement("button");btn.style.cssText="padding:4px 10px;min-height:32px;font-size:13px";
+        if(r.ok){btn.textContent="📖 Relire";btn.onclick=()=>showDebrief(i)}
+        else{btn.textContent="↺ Réessayer";btn.className="btn-r";btn.style.cssText+=";";btn.onclick=()=>retryLevel(i)}
+        row.append(btn);
+      }
+      list.append(row);
+    });
+    $("in").disabled=true;
+    $("in").placeholder=v.can_retry?"Utilisez « Réessayer » pour reprendre.":"Partie terminée.";
+    $("locks").textContent=v.results.map(r=>r.ok?"🔓":"❌").join("");
+    loadDebriefs();
+    paint();
+    return;
+  }
+  $("bilan").style.display="none";
+  ["btn-skip","btn-rst"].forEach(id=>$(id).style.display="inline-block");
+  $("in").disabled=false;$("in").placeholder="";
+  if(v.level!==level){
+    level=v.level;failed=0;$("out").textContent="";
+    print("Connecté en SYSDBA à pay-db-01. Tapez HELP pour les commandes.","c");
+    $("sev").textContent=v.sev;
+    $("sev").className=v.sev==="SEV-1"?"":v.sev==="SEV-2"?"s2":"s3";
+    $("from").textContent="De : "+v.from;
+    $("lv").textContent="INCIDENT "+(v.level+1)+"/"+v.total;
+    $("ti").textContent=v.title;
+    typeText(v.story);
+    if(!matchMedia("(max-width:760px)").matches)$("in").focus();
+  }
+  const h=$("hints");h.textContent="";
+  v.hints.forEach(t=>{const p=document.createElement("p");p.textContent="💡 "+t;h.append(p)});
+  const bh=$("btn-hint");
+  bh.style.display=v.hints_left>0?"inline-block":"none";
+  bh.textContent="💡 Indice (−"+v.hint_cost+" pts · "+v.hints_left+" restant"+(v.hints_left>1?"s":"")+")";
+  $("locks").textContent=Array.from({length:v.total},(_,i)=>v.results[i]===true?"🔓":v.results[i]===false?"❌":i===v.level?"🔐":"🔒").join("");
+  left=v.time_left;paint();
+}
+
+function paint(){
+  $("tm").textContent=mmss(left);
+  $("bat").firstChild.style.width=(left/TOTAL*100)+"%";
+  $("bat").className=left<180&&running?"low":"";
+  $("fail").textContent=running?"💳 paiements échoués : "+failed.toLocaleString("fr-FR"):"";
+}
+setInterval(()=>{
+  if(team&&running){
+    if(left>0)left--;
+    failed+=Math.floor(Math.random()*9)+2;
+    if(left===0){running=false;poll()}
+  }
+  paint();
+},1000);
+
+async function poll(){
+  if(!team||modal)return;
+  try{render(await api("/api/state"+q()))}
+  catch(e){if(e.status===404||e.status===403)logout("La partie a été réinitialisée : rejoignez à nouveau.")}
+}
+setInterval(poll,4000);
+
+function logout(msg){
+  team="";running=false;level=-1;
+  try{localStorage.removeItem("nova")}catch(e){}
+  ["lobby","dm"].forEach(id=>$(id).style.display="none");
+  $("login").style.display="flex";$("lerr").textContent=msg||"";
+}
+
+/* ---------- connexion ---------- */
+async function enter(name){
+  const v=await api("/api/join",{team:name});
+  team=v.team;
+  try{localStorage.setItem("nova",JSON.stringify({team}))}catch(e){}
+  $("login").style.display="none";$("lerr").textContent="";
+  render(v);
+}
+function tryJoin(){enter($("tn").value.trim()).catch(e=>$("lerr").textContent=e.message)}
+$("go").onclick=tryJoin;
+["tn"].forEach(id=>$(id).onkeydown=e=>{if(e.key==="Enter")tryJoin()});
+if(!document.body.classList.contains("proj")){
+  try{const s=JSON.parse(localStorage.getItem("nova")||"null");
+    if(s)enter(s.team).catch(()=>{try{localStorage.removeItem("nova")}catch(e){}})}catch(e){}
+}
+
+/* ---------- console ---------- */
+$("con").addEventListener("click",()=>{if(!getSelection().toString()&&!$("in").disabled)$("in").focus()});
+$("in").onkeydown=async e=>{
+  if(e.key==="ArrowUp"){e.preventDefault();if(hi>0)$("in").value=hist[--hi];return}
+  if(e.key==="ArrowDown"){e.preventDefault();if(hi<hist.length-1)$("in").value=hist[++hi];else{hi=hist.length;$("in").value=""}return}
+  if(e.key!=="Enter")return;
+  const c=$("in").value.trim();if(!c)return;
+  $("in").value="";hist.push(c);hi=hist.length;
+  print("SQL> "+c,"c");
+  try{
+    const r=await api("/api/command",{command:c});
+    if(r.output){
+      const bad=/^ORA-|^SP2-/.test(r.output);
+      print(r.output,bad?"e":"");
+      if(bad){document.body.classList.add("shake");setTimeout(()=>document.body.classList.remove("shake"),250)}
+    }
+    if(r.unlocked){
+      failed=0;
+      openDebrief("✔ Service rétabli : "+$("ti").textContent,r.unlocked,()=>render(r.view));
+    }else render(r.view);
+  }catch(err){
+    if(err.status===404||err.status===403)logout("La partie a été réinitialisée : rejoignez à nouveau.");
+    else print(err.message,"e");
+  }
+};
+
+/* ---------- classement ---------- */
+async function refreshBoard(){
+  try{
+    const b=await api("/api/leaderboard");
+    const ol=$("board-teams");ol.textContent="";
+    b.teams.slice(0,10).forEach((t,i)=>{
+      const li=document.createElement("li");
+      const nm=document.createElement("span");nm.className="first";nm.textContent=t.team;
+      const sm=document.createElement("small");sm.textContent=" ("+t.score+" pts · "+t.levels+"/3)";
+      li.append((["🥇","🥈","🥉"][i]||"")+" ",nm,sm);ol.append(li);
+    });
+    if(!b.teams.length){const li=document.createElement("li");li.textContent="aucune équipe";ol.append(li)}
+    const lv=$("board-levels");lv.textContent="";
+    b.levels.forEach(L=>{
+      const d=document.createElement("div");
+      const t=document.createElement("div");t.className="lvl";t.textContent="L"+(L.index+1)+" · "+L.title;
+      const ul=document.createElement("ul");ul.className="solves";
+      L.solves.forEach(s=>{const li=document.createElement("li");li.textContent="🕐 "+mmss(s.elapsed)+" — "+s.team;ul.append(li)});
+      if(!L.solves.length){const li=document.createElement("li");li.textContent="(non résolu)";ul.append(li)}
+      d.append(t,ul);lv.append(d);
+    });
+  }catch(e){}
+}
+setInterval(refreshBoard,3000);refreshBoard();
+</script></body></html>
