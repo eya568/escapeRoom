@@ -1,4 +1,4 @@
-# Oracle Escape Room — NovaPay DBA On-Call
+# Oracle Escape Room 
 
 A gamified, browser-based Oracle DBA training tool. Teams are dropped into a simulated `SQL*Plus` console and must resolve three realistic incidents on a fictional payment-processing database (`pay-db-01`): starting up a crashed instance, fixing a lost parameter change, and performing crash recovery after an emergency abort.
 
