@@ -16,7 +16,7 @@ from levels import LEVELS  # noqa: E402
 
 GAME_SECONDS = 15 * 60
 BASE_POINTS, HINT_COST = 10, 2
-BONUS = {1: 5, 2: 3, 3: 1}
+BONUS = {1: 5, 2: 4, 3: 3, 4: 2, 5: 1} 
 MAX_TEAMS = int(os.getenv("MAX_TEAMS", "12"))
 ADMIN_KEY = os.getenv("ADMIN_KEY") or secrets.token_urlsafe(6)
 
