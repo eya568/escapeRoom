@@ -1,4 +1,4 @@
-# Oracle Escape Room 
+# Oracle Escape Room — NovaPay DBA On-Call
 
 A gamified, browser-based Oracle DBA training tool. Teams are dropped into a simulated `SQL*Plus` console and must resolve three realistic incidents on a fictional payment-processing database (`pay-db-01`): starting up a crashed instance, fixing a lost parameter change, and performing crash recovery after an emergency abort.
 
@@ -12,14 +12,11 @@ Everything runs locally and safely. SQL commands typed in the console are never 
 
 ## Features
 
-- **3 Incident Scenarios**: Staged objectives covering lifecycle startup steps (`NOMOUNT` -> `MOUNT` -> `OPEN`), `PFILE`/`SPFILE` scope settings, and crash recovery.
-- **Simulated SQL*Plus Console**: Supports standard operational commands (`STARTUP`, `SHUTDOWN`, `ALTER DATABASE`, `ALTER SYSTEM SET`), inspection commands (`SHOW PARAMETER`, `HOST tail alert`), and `SELECT` queries on dynamic performance views.
-- **Realistic Oracle Error Messages**: Emulates real error codes (`ORA-01034`, `ORA-01507`, `ORA-01081`, `ORA-00904`, etc.) so experience translates directly to real environments.
-- **Timed Challenge Engine**: 15-minute countdown timer with a live multi-team leaderboard, point-deducting hint system, level skips/retries, and technical debriefs following each level.
-- **Isolated State Management**: Each registered team operates in its own isolated simulation instance.
-- **Automated Validation**: Levels unlock only when the correct sequence of operational and verification commands is executed.
-- **Test Coverage**: Includes `test_playthrough.py` to validate correct operational sequences and common incorrect paths.
-
+- **3 Incidents**: Startup steps (`NOMOUNT` → `MOUNT` → `OPEN`), `PFILE`/`SPFILE` parameter scope, and `SMON` crash recovery.
+- **SQL*Plus Console**: Simulates `STARTUP`, `SHUTDOWN`, `ALTER DATABASE`, `ALTER SYSTEM`, `SHOW PARAMETER`, and `SELECT` queries on dynamic views (`V$INSTANCE`, `V$SESSION`, etc.).
+- **Real Oracle Errors**: Uses authentic error codes (`ORA-01034`, `ORA-01507`, `ORA-01081`, `ORA-00904`).
+- **Game Engine**: 15-minute timer, hints, live leaderboard, score tracking, and post-level debriefs.
+- **Isolated State**: Per-team state isolation for concurrent multiplayer sessions.
 ## Tech Stack
 
 - **Backend**: Python 3.10+ using FastAPI and Uvicorn
