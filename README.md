@@ -74,7 +74,7 @@ When the server starts, administrative URLs and your generated `ADMIN_KEY` are o
 
 ## Solutions
 
-Full walkthroughs for all 3 incidents are available in [SOLUTIONS.md](SOLUTIONS.md).
+Full walkthroughs for all 3 incidents are available in [SOLUTIONS.md](tests/SOLUTIONS.md).
 
 > **Instructor note:** `SOLUTIONS.md` is the answer key. Do not read it before attempting the incidents.
 ## Project Structure
@@ -83,10 +83,12 @@ Full walkthroughs for all 3 incidents are available in [SOLUTIONS.md](SOLUTIONS.
 .
 ├── app.py                 # FastAPI application routes, game loop, and leaderboard logic
 ├── README.md
-├── SOLUTIONS.md
 ├── engine.py              # In-memory SQL*Plus simulation engine
 ├── levels.py              # Incident setup, check logic, and technical debriefs
 ├── requirements.txt       # Python package dependencies
+├── tests/
+ └── test_playthrough.py        # Single-page terminal frontend
+ └── SOLUTIONS.md
 ├── test_playthrough.py    # Automated tests for level progression
 ├── static/
 │   └── index.html         # Single-page terminal frontend
