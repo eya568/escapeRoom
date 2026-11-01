@@ -72,11 +72,18 @@ When the server starts, administrative URLs and your generated `ADMIN_KEY` are o
 - **Start Game Countdown**: `GET /api/admin/start?key=<ADMIN_KEY>`
 - **Reset Teams & Progress**: `GET /api/admin/reset?key=<ADMIN_KEY>`
 
+## Solutions
+
+Full walkthroughs for all 3 incidents are available in [SOLUTIONS.md](SOLUTIONS.md).
+
+> **Instructor note:** `SOLUTIONS.md` is the answer key. Do not read it before attempting the incidents.
 ## Project Structure
 
 ```text
 .
 ├── app.py                 # FastAPI application routes, game loop, and leaderboard logic
+├── README.md
+├── SOLUTIONS.md
 ├── engine.py              # In-memory SQL*Plus simulation engine
 ├── levels.py              # Incident setup, check logic, and technical debriefs
 ├── requirements.txt       # Python package dependencies
